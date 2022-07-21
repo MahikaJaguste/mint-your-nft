@@ -5,35 +5,24 @@ const { verify } = require("../utils/verify")
 module.exports = async ({ getNamedAccounts, deployments }) => {
 
     const { deploy, log } = deployments
-    const { deployer, tokenOwner } = await getNamedAccounts()
+    const { deployer} = await getNamedAccounts()
 
     log("----------------------------------------------------")
 
-    const arguments = [tokenOwner]
+    const arguments = []
 
-    const token = await deploy("Token", {
+    const yourNFT = await deploy("YourNFT", {
         from: deployer,
         args: arguments,
         log: true,
         waitConfirmations: network.config.blockConfirmations || 1,
     })
-
-    // Deploying a different version of the same contract 
-    /*
-    await deploy("MyToken_1", {
-        contract: 'Token',
-        from: deployer,
-        args: arguments,
-        log: true,
-        waitConfirmations: network.config.blockConfirmations || 1,
-    })
-    */
 
     // Verify the deployment
     if (!developmentChains.includes(network.name) && process.env.ETHERSCAN_API_KEY) {
         log("Verifying...")
-        await verify(token.address, arguments)
+        await verify(yourNFT.address, arguments)
     }
 }
 
-module.exports.tags = ["all", "Token", "main"]
+module.exports.tags = ["all", "YourNFT", "main"]
